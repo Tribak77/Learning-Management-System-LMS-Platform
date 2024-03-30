@@ -6,8 +6,8 @@ This is a web-based Learning Management System (LMS) designed to facilitate the 
 * HTML
 * CSS
 * Bootstrap
-*PHP
-*MySQL (or any SQL database)
+* PHP
+* MySQL (or any SQL database)
 # Features
 ## Admin Panel:
 
