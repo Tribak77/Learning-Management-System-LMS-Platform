@@ -1,0 +1,33 @@
+body {
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+.welcome span {
+    color: #667085;
+}
+
+.log_in {
+    width: 450px;
+    height: 310px;
+    border-radius: 15px;
+
+}
+
+.login_input {
+    width: 220px;
+    height: 35px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 1px solid #bdc0c9;
+}
+
+.login_button {
+    width: 220px;
+    height: 35px;
+    margin: 5px;
+    border-radius: 5px;
+    border: 0px;
+    background-color: #08A0F7;
+    color: white;
+}
