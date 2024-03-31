@@ -31,3 +31,24 @@ function check_users($DB, $email, $password)
 
     return [$row_u, $row_l];
 }
+
+function count_users_briefs($DB)
+{
+
+    $trainers = "SELECT count(*) as trainers FROM trainer ";
+    $stat_trainers = $DB->prepare($trainers);
+    $stat_trainers->execute();
+    $row_t = $stat_trainers->fetch(PDO::FETCH_ASSOC);
+
+    $learners = "SELECT count(*) as learners FROM learner ";
+    $stat_learners = $DB->prepare($learners);
+    $stat_learners->execute();
+    $row_l = $stat_learners->fetch(PDO::FETCH_ASSOC);
+
+    $briefs = "SELECT count(*) as briefs FROM brief ";
+    $stat_briefs = $DB->prepare($briefs);
+    $stat_briefs->execute();
+    $row_b = $stat_briefs->fetch(PDO::FETCH_ASSOC);
+
+    return [$row_t, $row_l, $row_b];
+}

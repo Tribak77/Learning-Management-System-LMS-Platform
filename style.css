@@ -31,3 +31,130 @@ body {
     background-color: #08A0F7;
     color: white;
 }
+
+.NAV {
+    height: 42em;
+    background-color: white;
+    border-radius: 15px;
+}
+
+.logo {
+    border-radius: 50%;
+}
+
+.logo_title_1{
+    font-size: 1em;
+}
+
+.logo_title_2 {
+    color: #7A7E86;
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+
+@media (max-width: 576px) {
+    .logo_title_1{
+        font-size: 0.6em;
+    }
+    .logo_title_2{
+        font-size: 0.5em;
+    }
+}
+
+.div_link_active{
+    background-color: #08A0F7;
+    border-radius: 15px;
+}
+
+.div_link_active a {
+    text-decoration: none;
+}
+
+.nav_icon_active{
+    background-color: #08A0F7;
+    color: white;
+}
+
+.nav_link_active{
+    color: white;
+}
+
+.div_link{
+    background-color: white;
+    border-radius: 15px;
+}
+
+.div_link a{
+    text-decoration: none;
+}
+
+.nav_icon{
+    background-color: white;
+    color: #7A7E86;
+}
+
+.nav_link{
+    color: #7A7E86;
+    opacity: 0.7;
+}
+
+.nav_btn{
+    border: 0px;
+    background-color: white;
+}
+
+.div_link:hover{
+    border: #08A0F7 2px solid;
+    border-radius: 15px;
+}
+
+.h3-welcom{
+    background-color: white;
+    border-radius: 15px;
+
+}
+
+.add{
+    background-color: white;
+    border-radius: 15px;
+    height: 120px;
+}
+
+.add i {
+    color: #08A0F7;
+  
+}
+
+.add button{
+    font-size: large;
+    font-weight:500;
+}
+
+.statistics{
+    background-color: white;
+    border-radius: 15px;
+}
+
+.count_briefs{
+    border-radius: 50%;
+    background-color: #FBA63C;
+    height: 40px;
+    width: 40px;
+}
+
+.count_learners{
+    border-radius: 50%;
+    background-color: #5DC983;
+    height: 40px;
+    width: 40px;
+}
+
+.count_trainers{
+    border-radius: 50%;
+    background-color: #08A0F7;
+    height: 40px;
+    width: 40px;
+}
+.count i{
+    color: white;
+}
