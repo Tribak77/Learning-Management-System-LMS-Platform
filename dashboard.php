@@ -104,6 +104,7 @@ $count_users = count_users_briefs($DB);
 
                 <div class="col-12 row">
                     <?php
+                    $CurrentDate = date('F - Y');
                     if ($user_role == 'Admin') {
                         echo '
                     <div class="col-md-3 row mt-4 me-3">
@@ -126,7 +127,7 @@ $count_users = count_users_briefs($DB);
                    <div class="col-11 col-md-3 statistics mt-4 p-3">
                       <div class="m-2">
                         <h5>Statistics</h5>
-                        <span>Januart - June 2021</span>
+                        <span>'. $CurrentDate .'</span>
                       </div>
 
                       <div class="d-flex ms-2 mt-4">

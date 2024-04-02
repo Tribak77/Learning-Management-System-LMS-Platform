@@ -108,21 +108,6 @@ function get_brief_by_learner($DB, $id_learner)
     return $row_b;
 }
 
-function get_brief_details($DB, $id_brief)
-{
-    $get_brie = "SELECT * FROM brief 
-                 INNER JOIN brief_skill ON brief.id_brief = brief_skill.id_brief
-                 INNER JOIN skill ON brief_skill.id_skill = skill.id_skill 
-                 WHERE brief.id_brief = :id_brief ";
-    $stat_get_brief_dts = $DB->prepare($get_brie);
-    $stat_get_brief_dts->bindParam(':id_brief', $id_brief);
-    $stat_get_brief_dts->execute();
-
-    $row_d = $stat_get_brief_dts->fetchAll(PDO::FETCH_ASSOC);
-
-    return $row_d;
-}
-
 function show_second_modal($msg)
 {
     echo '<script>';
@@ -207,6 +192,7 @@ function update_brief_state($DB, $id_learner, $id_brief, $url)
     $stat_brief->execute();
 }
 
+// learners /////
 
 // get the learners by id from database to edit or delete them
 function get_learners_by_id($DB, $id_learner)
@@ -272,4 +258,111 @@ function remove_learner($DB, $id_learner)
     $stat_remove_learner->bindParam(':id_learner', $id_learner);
 
     $stat_remove_learner->execute();
+}
+
+// briefs /////
+
+function get_briefs($DB)
+{
+    $get_briefs = "SELECT * FROM brief";
+    $stat_get_briefs = $DB->prepare($get_briefs);
+    $stat_get_briefs->execute();
+
+    $row_b = $stat_get_briefs->fetchAll(PDO::FETCH_ASSOC);
+
+    return $row_b;
+}
+
+function get_briefs_by_search($DB, $title)
+{
+    $get_briefs = "SELECT * FROM brief WHERE title LIKE :title";
+    $stat_get_briefs = $DB->prepare($get_briefs);
+    $search_title = '%' . $title . '%';
+    $stat_get_briefs->bindParam(':title', $search_title);
+    $stat_get_briefs->execute();
+
+    $row_b = $stat_get_briefs->fetchAll(PDO::FETCH_ASSOC);
+
+    return $row_b;
+}
+
+function get_brief_details($DB, $id_brief)
+{
+    $get_brie = "SELECT * FROM brief 
+                 INNER JOIN brief_skill ON brief.id_brief = brief_skill.id_brief
+                 INNER JOIN skill ON brief_skill.id_skill = skill.id_skill 
+                 WHERE brief.id_brief = :id_brief ";
+    $stat_get_brief_dts = $DB->prepare($get_brie);
+    $stat_get_brief_dts->bindParam(':id_brief', $id_brief);
+    $stat_get_brief_dts->execute();
+
+    $row_d = $stat_get_brief_dts->fetchAll(PDO::FETCH_ASSOC);
+
+    return $row_d;
+}
+
+// traine ////
+
+function get_trainers($DB)
+{
+    $get_trainers = "SELECT * FROM trainer";
+    $stat_get_strainers = $DB->prepare($get_trainers);
+    $stat_get_strainers->execute();
+
+    $row_t = $stat_get_strainers->fetchAll(PDO::FETCH_ASSOC);
+
+    return $row_t;
+}
+
+function get_trainers_by_search($DB, $name)
+{
+    $get_trainer = "SELECT * FROM trainer WHERE last_name LIKE :name ";
+    $stat_get_trainer = $DB->prepare($get_trainer);
+    $name_search = '%' . $name . '%';
+    $stat_get_trainer->bindParam(':name', $name_search);
+    $stat_get_trainer->execute();
+
+    $row_l = $stat_get_trainer->fetchAll(PDO::FETCH_ASSOC);
+
+    return $row_l;
+}
+
+// get the trainers by id from database to edit or delete them
+function get_trainer_by_id($DB, $id_trainer)
+{
+    $get_trainer = "SELECT * FROM trainer WHERE id_trainer = :id_trainer";
+    $stat_get_strainer = $DB->prepare($get_trainer);
+    $stat_get_strainer->bindParam(':id_trainer', $id_trainer);
+    $stat_get_strainer->execute();
+
+    $row_t = $stat_get_strainer->fetch(PDO::FETCH_ASSOC);
+
+    return $row_t;
+}
+
+function edit_trainer($DB, $last_name, $first_name, $email, $password_tr, $id_trainer)
+{
+    $edit_trainer = "UPDATE trainer 
+    SET last_name = :last_name,
+    first_name = :first_name, 
+    email = :email, 
+    password_tr = :password_tr 
+    WHERE id_trainer = :id_trainer ";
+    $stat_edit_trainer = $DB->prepare($edit_trainer);
+    $stat_edit_trainer->bindParam(':last_name', $last_name);
+    $stat_edit_trainer->bindParam(':first_name', $first_name);
+    $stat_edit_trainer->bindParam(':email', $email);
+    $stat_edit_trainer->bindParam(':password_tr', $password_tr);
+    $stat_edit_trainer->bindParam(':id_trainer', $id_trainer);
+
+    $stat_edit_trainer->execute();
+}
+
+function remove_trainer($DB, $id_trainer)
+{
+    $remove_trainer = "DELETE FROM trainer WHERE id_trainer = :id_trainer";
+    $stat_remove_trainer = $DB->prepare($remove_trainer);
+    $stat_remove_trainer->bindParam(':id_trainer', $id_trainer);
+
+    $stat_remove_trainer->execute();
 }
