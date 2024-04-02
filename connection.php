@@ -139,7 +139,7 @@ function show_edit_modal()
 {
     echo '<script>';
     echo 'document.addEventListener("DOMContentLoaded", function() {';
-    echo '    let editModal = new bootstrap.Modal(document.getElementById("modal_edit"));'; 
+    echo '    let editModal = new bootstrap.Modal(document.getElementById("modal_edit"));';
     echo '    editModal.show();';
     echo '});';
     echo '</script>';
@@ -149,7 +149,7 @@ function show_confirm_modal()
 {
     echo '<script>';
     echo 'document.addEventListener("DOMContentLoaded", function() {';
-    echo '    let removeModal = new bootstrap.Modal(document.getElementById("modal_remove"));'; 
+    echo '    let removeModal = new bootstrap.Modal(document.getElementById("modal_remove"));';
     echo '    removeModal.show();';
     echo '});';
     echo '</script>';
@@ -205,4 +205,71 @@ function update_brief_state($DB, $id_learner, $id_brief, $url)
     $stat_brief->bindParam(':id_brief', $id_brief);
     $stat_brief->bindParam(':url', $url);
     $stat_brief->execute();
+}
+
+
+// get the learners by id from database to edit or delete them
+function get_learners_by_id($DB, $id_learner)
+{
+    $get_learner = "SELECT * FROM learner WHERE id_learner = :id_learner";
+    $stat_get_learner = $DB->prepare($get_learner);
+    $stat_get_learner->bindParam(':id_learner', $id_learner);
+    $stat_get_learner->execute();
+
+    $row_l = $stat_get_learner->fetch(PDO::FETCH_ASSOC);
+
+    return $row_l;
+}
+
+function get_learners($DB)
+{
+    $get_learner = "SELECT * FROM learner";
+    $stat_get_learner = $DB->prepare($get_learner);
+    $stat_get_learner->execute();
+
+    $row_l = $stat_get_learner->fetchAll(PDO::FETCH_ASSOC);
+
+    return $row_l;
+}
+
+function get_learners_by_search($DB, $name)
+{
+    $get_learner = "SELECT * FROM learner WHERE last_name LIKE :name ";
+    $stat_get_learner = $DB->prepare($get_learner);
+    $name_search = '%' . $name . '%';
+    $stat_get_learner->bindParam(':name', $name_search);
+    $stat_get_learner->execute();
+
+    $row_l = $stat_get_learner->fetchAll(PDO::FETCH_ASSOC);
+
+    return $row_l;
+}
+
+function edit_learner($DB, $last_name, $first_name, $group, $email, $password_ln, $id_learner)
+{
+    $edit_learner = "UPDATE learner 
+    SET last_name = :last_name,
+    first_name = :first_name,
+    group_ = :group, 
+    email = :email, 
+    password_ln = :password_ln 
+    WHERE id_learner = :id_learner ";
+    $stat_edit_learner = $DB->prepare($edit_learner);
+    $stat_edit_learner->bindParam(':last_name', $last_name);
+    $stat_edit_learner->bindParam(':first_name', $first_name);
+    $stat_edit_learner->bindParam(':group', $group);
+    $stat_edit_learner->bindParam(':email', $email);
+    $stat_edit_learner->bindParam(':password_ln', $password_ln);
+    $stat_edit_learner->bindParam(':id_learner', $id_learner);
+
+    $stat_edit_learner->execute();
+}
+
+function remove_learner($DB, $id_learner)
+{
+    $remove_learner = "DELETE FROM learner WHERE id_learner = :id_learner";
+    $stat_remove_learner = $DB->prepare($remove_learner);
+    $stat_remove_learner->bindParam(':id_learner', $id_learner);
+
+    $stat_remove_learner->execute();
 }

@@ -32,7 +32,7 @@ $count_users = count_users_briefs($DB);
 
     <section class="row m-2">
         <!-- the sidebar -->
-        <div class="col-2 NAV mt-4 ms-md-5 ">
+        <div class="col-2 NAV mt-4 ms-md-5 me-5">
             <div class="row d-flex justify-content-center ">
                 <div class="col-12 d-flex justify-content-center mt-3 p-0">
                     <div class="row d-flex justify-content-center">
@@ -68,16 +68,18 @@ $count_users = count_users_briefs($DB);
                     }
 
                     if ($user_role == 'Admin' || $user_role == 'Trainer') {
-                        echo '<div class="div_link col-10  m-1 p-md-1 d-flex justify-content-center justify-content-md-start">
+                        echo '<div class="div_link col-10 m-1 p-md-1 d-flex justify-content-center justify-content-md-start">
                         <a href="learners.php" class="m-1"> 
                           <i class="fa-solid fa-graduation-cap nav_icon"></i> 
                           <span class="ps-2 d-none d-md-inline nav_link"> Learners </span> 
                         </a>
-                    </div>
-                    <div class="div_link col-10  m-1 p-md-1 d-flex justify-content-center justify-content-md-start" >
+                    </div>';
+                    }
+                    if($user_role == 'Trainer'){
+                     echo '<div class="div_link col-10 m-1 p-md-1 d-flex justify-content-center justify-content-md-start" >
                         <a href="briefs-statement.php" class="m-1"> 
                           <i class="fa-solid fa-chart-simple nav_icon"></i> 
-                          <span class=" ps-2 d-none d-md-inline nav_link"> Briefs Statement </span> 
+                          <span class="ps-2 d-none d-md-inline nav_link"> Briefs Statement </span> 
                         </a>
                     </div>';
                     }
@@ -93,14 +95,14 @@ $count_users = count_users_briefs($DB);
         </div>
 
         <!-- the dashboard -->
-        <div class="col-8 mt-4 ms-md-5 me-5">
+        <div class="col-8 mt-4 ms-md-5 ">
             <div class="row">
 
-                <div class="col-sm-12 col-md-8 text-center h3-welcom p-3 ">
+                <div class="col-10 col-md-8 text-center h3-welcom p-3 mb-5">
                     <h3>Welcome to your dashboard, <?php echo $user_role . ' ' . $user_name ?> </h3>
                 </div>
 
-                <div class="col-12 row mt-5">
+                <div class="col-12 row">
                     <?php
                     if ($user_role == 'Admin') {
                         echo '
@@ -121,7 +123,7 @@ $count_users = count_users_briefs($DB);
                         </div>
                    </div>
 
-                   <div class="col-md-3 col-sm-12 statistics mt-4 ">
+                   <div class="col-11 col-md-3 statistics mt-4 p-3">
                       <div class="m-2">
                         <h5>Statistics</h5>
                         <span>Januart - June 2021</span>
@@ -159,7 +161,7 @@ $count_users = count_users_briefs($DB);
                  </div> ';
                     } else if ($user_role == 'Trainer') {
 
-                        echo ' <div class="col-md-3 row mt-4 ">
+                        echo ' <div class="col-11 col-md-3 row mt-4 ">
                                  <div class="col-12 add text-center mt-3 pt-2">
                                      <i class="fa-solid fa-xl fa-box-archive mt-4"></i><br>
                                      <button type="button" class="btn mt-4" data-bs-toggle="modal" data-bs-target="#addBrief"> Add briefs </button>
@@ -173,7 +175,7 @@ $count_users = count_users_briefs($DB);
 
                             foreach ($brief_by_learner as $brief_) {
 
-                                echo '<div class="col-lg-3 col-md-4 col-sm-12 row cart_brief m-3 p-3 text-center">
+                                echo '<div class="col-10 col-md-3 row cart_brief m-3 p-3 text-center">
                                                <h4>' . $brief_['title'] . '</h4>
                                                <div class="col-4 ">
                                                   <h6>from: </h6>
@@ -186,7 +188,7 @@ $count_users = count_users_briefs($DB);
                                                <form action="" class="col-12 mt-3" method="post">
                                                <input type="hidden" name="brief_state" value="' . $brief_['state'] . '">
                                               <input type="hidden" name="id_brief" value="' . $brief_['id_brief'] . '">
-                                              <button class="see_details_brief" type="submit" name="brief_details" >see</button>';
+                                              <button class="see_details_brief me-3" type="submit" name="brief_details" >see</button>';
 
                                 if ($brief_['state'] == 'done') {
                                     echo '<span> <i class="fa-solid fa-circle-check"></i> ' . $brief_['state'] . ' </span>';
@@ -613,8 +615,13 @@ $count_users = count_users_briefs($DB);
 
             $titel = $_POST['titel'];
             // $attachment = $_POST['attached'];
-            $date_start = $_POST['date_start'];
-            $date_end = $_POST['date_end'];
+            $date_start = date('Y-m-d', strtotime($_POST['date_start']));
+            $date_end = date('Y-m-d', strtotime($_POST['date_end']));
+            $currentDate = date('Y-m-d');
+            $currentDate = date('Y-m-d', strtotime($currentDate));
+
+            
+            if($date_end > $date_start && $date_end >= $currentDate ){
 
             // Check if a file was uploaded
             if (isset($_FILES['attached']) && $_FILES['attached']['error'] === UPLOAD_ERR_OK) {
@@ -655,6 +662,13 @@ $count_users = count_users_briefs($DB);
 
                 show_second_modal($msg);
             }
+        }else {
+            $msg_titel = 'Error adding';
+                $msg_content = '<img src="imgs/error-img.png" alt="Error adding">
+                                <span class="text-center"> You entered an end date that is less than the current date or less than the start date</span>';
+
+                show_second_modal($msg);
+        }
         }
 
         ?>
