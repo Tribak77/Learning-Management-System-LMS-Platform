@@ -366,3 +366,79 @@ function remove_trainer($DB, $id_trainer)
 
     $stat_remove_trainer->execute();
 }
+
+// update the state of the brief to 'doing'
+function learner_doing_brief($DB, $id_brief, $id_learner)
+{
+    $state = 'doing';
+    $learner_brief = "INSERT INTO learner_brief ( id_brief , id_learner , state)
+    VALUES (:id_brief , :id_learner , :state) ";
+    $stat_learner_brief = $DB->prepare($learner_brief);
+    $stat_learner_brief->bindParam(':id_brief', $id_brief);
+    $stat_learner_brief->bindParam(':id_learner', $id_learner);
+    $stat_learner_brief->bindParam(':state', $state);
+
+    $stat_learner_brief->execute();
+}
+
+function check_briefs_stat($DB, $id_learner, $id_brief)
+{
+    $brief = "SELECT * FROM brief INNER JOIN learner_brief ON brief.id_brief = learner_brief.id_brief
+                  INNER JOIN learner ON learner_brief.id_learner = learner.id_learner 
+                  WHERE learner.id_learner = :id_learner AND brief.id_brief = :id_brief";
+    $stat_brief = $DB->prepare($brief);
+    $stat_brief->bindParam(':id_learner', $id_learner);
+    $stat_brief->bindParam(':id_brief', $id_brief);
+    $stat_brief->execute();
+
+    $row_b = $stat_brief->fetch(PDO::FETCH_ASSOC);
+
+    return $row_b;
+}
+
+function count_brief_by_state($DB)
+{
+    $done = 'done';
+    $doing = 'doing';
+    // count done briefs
+    $done_briefs = "SELECT count(*) as c_done FROM brief INNER JOIN learner_brief ON brief.id_brief = learner_brief.id_brief
+                  INNER JOIN learner ON learner_brief.id_learner = learner.id_learner 
+                  WHERE learner_brief.state = :done";
+    $stat_done_briefs = $DB->prepare($done_briefs);
+    $stat_done_briefs->bindParam(':done', $done);
+    $stat_done_briefs->execute();
+    $row_done = $stat_done_briefs->fetch(PDO::FETCH_ASSOC);
+
+    // count doing briefs
+    $doing_briefs = "SELECT count(*) as c_doing FROM brief INNER JOIN learner_brief ON brief.id_brief = learner_brief.id_brief
+                     INNER JOIN learner ON learner_brief.id_learner = learner.id_learner 
+                     WHERE learner_brief.state = :doing";
+    $stat_doing_briefs = $DB->prepare($doing_briefs);
+    $stat_doing_briefs->bindParam(':doing', $doing);
+    $stat_doing_briefs->execute();
+    $row_doing = $stat_doing_briefs->fetch(PDO::FETCH_ASSOC);
+
+    // count all briefs 
+    $done_briefs = "SELECT count(*) as c_all FROM brief";
+    $stat_done_briefs = $DB->prepare($done_briefs);
+    $stat_done_briefs->execute();
+    $row_all = $stat_done_briefs->fetch(PDO::FETCH_ASSOC);
+
+    return [$row_all, $row_doing, $row_done];
+}
+
+function get_brief_by_title($DB, $title)
+{
+    $brief_by_title = "SELECT * FROM brief INNER JOIN learner_brief ON brief.id_brief = learner_brief.id_brief
+                  INNER JOIN learner ON learner_brief.id_learner = learner.id_learner 
+                  WHERE brief.title LIKE :title";
+    $stat_briefs = $DB->prepare($brief_by_title);
+    $search_title = '%' . $title . '%';
+    $stat_briefs->bindParam(':title', $search_title);
+    $stat_briefs->execute();
+
+    $row_b = $stat_briefs->fetchAll(PDO::FETCH_ASSOC);
+
+    return $row_b;
+}
+

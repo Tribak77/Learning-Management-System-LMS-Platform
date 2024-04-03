@@ -349,3 +349,12 @@ body {
 .fa-clock {
     color: #08A0F7;
 }
+
+.edit_brief{
+    background-color: white;
+    border: 0px;
+}
+
+.fa-pen-to-square{
+    color: #FBA63C;
+}

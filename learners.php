@@ -125,13 +125,15 @@ if (isset($_POST['confirm_remove'])) {
         <div class="col-9 ms-2 mt-4 ms-md-5 ">
             <div class="row ms-3">
                 <div class="col-12 row search_div d-flex align-items-center ">
-                    <form action="" class="col-10 " method="post">
-                        <div class="input-group ms-3">
+                    <form action="" class="col-10 col-md-11 " method="post">
+                        <div class="input-group ms-2 ">
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="search" name="search" class="search_input  w-75" placeholder=" Search by last name">
+                            <input type="search" name="search" class="search_input col-9 col-md-11" placeholder=" Search briefs by title">
                         </div>
                     </form>
-                    <i class="fa-regular fa-bell col-1 "></i>
+                    <div class="d-flex col-1">
+                        <i class="fa-regular fa-bell ms-auto "></i>
+                    </div>
                 </div>
 
                 <div class="col-12 row table-responsive tbl mt-5 p-0">
@@ -217,7 +219,7 @@ if (isset($_POST['confirm_remove'])) {
                                 }
                             } else {
                                 echo '<tr>
-                            <td> No learners yet  </td>
+                            <td colspan="4"> No learners yet  </td>
                             </tr>';
                             }
                         }

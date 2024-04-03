@@ -3,7 +3,7 @@ session_start();
 include 'connection.php';
 
 // Check if user is logged in and has a role set in the session
-if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'Admin') {
+if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'Trainer') {
     $user_role = $_SESSION['user_role'];
     $user_name = $_SESSION['user_name'];
     $user_id = $_SESSION['user_id'];
@@ -13,34 +13,7 @@ if (isset($_SESSION['user_role']) && $_SESSION['user_role'] == 'Admin') {
     exit();
 }
 
-// Edit trainer information
-if (isset($_POST['save_edit'])) {
-    $msg = 'edit';
-    $first_name = $_POST['f_name'];
-    $last_name = $_POST['l_name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $id_trainer = $_POST['id_trainer'];
-
-    if (strpos($email, 'trainer')) {
-        edit_trainer($DB, $last_name, $first_name, $email, $password, $id_trainer);
-        header('location: trainers.php');
-        exit();
-    } else {
-        $msg_titel = 'Editing error';
-        $msg_content = '<img src="imgs/error-img.png" alt="Error editing">
-                <span> The trainer`s email must contain the word: trainer </span>';
-
-        show_second_modal($msg);
-    }
-}
-
-// confirm the delete of trainer from database
-if (isset($_POST['confirm_remove'])) {
-    $id_trainer = $_POST['id_trainer'];
-
-    remove_trainer($DB, $id_trainer);
-}
+$count_briefs = count_brief_by_state($DB);
 
 ?>
 <!DOCTYPE html>
@@ -58,7 +31,7 @@ if (isset($_POST['confirm_remove'])) {
 <body style="background-color: #EFF1F6;">
 
     <section class="row ms-2">
-        <div class="col-2 NAV mt-4 ms-md-5 ">
+    <div class="col-2 NAV mt-4 ms-md-5 ">
             <div class="row d-flex justify-content-center ">
                 <div class="col-12 d-flex justify-content-center mt-3 p-0">
                     <div class="row d-flex justify-content-center">
@@ -71,13 +44,13 @@ if (isset($_POST['confirm_remove'])) {
                     <h6 class="logo_title_2">Computer Science</h6>
                 </div>
                 <div class="col-12 mt-4 p-0 row d-flex justify-content-center">
-                    <div class="div_link col-10 m-1 p-md-1 d-flex justify-content-center justify-content-md-start">
+                    <div class="div_link col-10 m-1  p-md-1 d-flex justify-content-center justify-content-md-start">
                         <a href="dashboard.php " class="m-1">
                             <i class="fa-solid fa-table-cells-large nav_icon"></i>
                             <span class="ps-2 d-none d-md-inline nav_link"> Dashboard </span>
                         </a>
                     </div>
-                    <div class="div_link col-10  m-1 p-md-1 d-flex justify-content-center justify-content-md-start">
+                    <div class="div_link col-10  m-1  p-md-1 d-flex justify-content-center justify-content-md-start">
                         <a href="briefs.php" class="m-1">
                             <i class="fa-solid fa-box-archive nav_icon"></i>
                             <span class="ps-2 d-none d-md-inline nav_link"> Briefs </span>
@@ -85,10 +58,10 @@ if (isset($_POST['confirm_remove'])) {
                     </div>
                     <?php
                     if ($user_role == 'Admin') {
-                        echo '  <div class="div_link_active col-10  m-1 p-md-1 d-flex justify-content-center justify-content-md-start">
+                        echo '  <div class="div_link col-10  p-md-1 m-1 d-flex justify-content-center justify-content-md-start">
                         <a href="trainers.php" class="m-1"> 
-                           <i class="fa-solid fa-user-group nav_icon_active"></i> 
-                           <span class="ps-2 d-none d-md-inline nav_link_active"> Trainers </span> 
+                           <i class="fa-solid fa-user-group nav_icon"></i> 
+                           <span class="ps-2 d-none d-md-inline nav_link"> Trainers </span> 
                         </a>
                     </div>';
                     }
@@ -101,16 +74,16 @@ if (isset($_POST['confirm_remove'])) {
                         </a>
                     </div>';
                     }
-                    if ($user_role == 'Trainer') {
-                        echo '<div class="div_link col-10 m-1 p-md-1 d-flex justify-content-center justify-content-md-start" >
+                    if($user_role == 'Trainer'){
+                     echo '<div class="div_link_active col-10 m-1 p-md-1 d-flex justify-content-center justify-content-md-start" >
                         <a href="briefs-statement.php" class="m-1"> 
-                          <i class="fa-solid fa-chart-simple nav_icon"></i> 
-                          <span class="ps-2 d-none d-md-inline nav_link"> Briefs Statement </span> 
+                          <i class="fa-solid fa-chart-simple nav_icon_active"></i> 
+                          <span class="ps-2 d-none d-md-inline nav_link_active"> Briefs Statement </span> 
                         </a>
                     </div>';
                     }
                     ?>
-                    <form action="log-in.php" method="post" class="div_link col-10  m-1 p-md-1 d-flex justify-content-center justify-content-md-start">
+                    <form action="log-in.php" method="post" class="div_link col-10  p-md-1 m-1 d-flex justify-content-center justify-content-md-start">
                         <button type="submit" class="nav_btn m-1" name="log_out">
                             <i class="fa-solid fa-arrow-right-from-bracket nav_icon"></i>
                             <span class="ps-2 d-none d-md-inline nav_link"> Log Out </span>
@@ -120,110 +93,90 @@ if (isset($_POST['confirm_remove'])) {
             </div>
 
         </div>
-        <div class="col-9 ms-2 mt-4 ms-md-5 ">
+        <div class="col-9 mt-4 ms-md-5">
             <div class="row ms-3">
-                <div class="col-12 row search_div d-flex align-items-center ">
-                    <form action="" class="col-10 col-md-11 " method="post">
-                        <div class="input-group ms-2 ">
-                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="search" name="search" class="search_input col-9 col-md-11" placeholder=" Search briefs by title">
+
+                <div class="col-12 row m-0 ">
+
+                    <div class="col-12 row mt-4 ">
+                        <div class="col-12 col-md-3 statement_b p-2 row m-2">
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <div class="circle_b d-flex justify-content-center align-items-center"> <?php echo $count_briefs[0]['c_all'] ?> </div>
+                            </div>
+                            <h4 class="col-12 text-center mt-1"> all briefs</h4>
                         </div>
-                    </form>
-                    <div class="d-flex col-1">
-                        <i class="fa-regular fa-bell ms-auto "></i>
+
+                        <div class="col-12 col-md-3 statement_b p-2 row m-2">
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <div class="circle_b d-flex justify-content-center align-items-center"> <?php echo $count_briefs[1]['c_doing'] ?> </div>
+                            </div>
+                            <h4 class="col-12 text-center mt-1"> in progress</h4>
+                        </div>
+
+                        <div class="col-12 col-md-3 statement_b p-2 row m-2">
+                            <div class="col-12 d-flex justify-content-center align-items-center">
+                                <div class="circle_b d-flex justify-content-center align-items-center"> <?php echo $count_briefs[2]['c_done'] ?> </div>
+                            </div>
+                            <h4 class="col-12 text-center mt-1"> finished</h4>
+                        </div>
                     </div>
-                </div>
 
+                    <div class="col-12 mt-5 ">
+                        <form action="" method="post">
+                            <input type="text" class="filter_input" placeholder=" filter by brief's title" name="brief_title" required>
+                            <button type="submit" name="filter_brief" class="filter_btn"> <i class="fa-solid fa-magnifying-glass"></i></button>
 
-                <div class="col-12 row table-responsive tbl mt-5 p-0">
-                    <table class="table m-0 ">
-                        <tr>
-                            <th>Full name</th>
-                            <th>ID</th>
-                            <th>Email</th>
-                            <th>Edit</th>
-                            <th>Remove</th>
-                        </tr>
+                        </form>
+
+                       <div class="table-responsive">
                         <?php
-                        if (isset($_POST['search'])) {
-                            $trainer_name = $_POST['search'];
+                        if(isset($_POST['filter_brief'])){
+                            $brief_title = $_POST['brief_title'];
 
-                            $trainers_by_search = get_trainers_by_search($DB, $trainer_name);
-
-                            if (!empty($trainers_by_search)) {
-                                foreach ($trainers_by_search as $trainer) {
-                                    echo '<tr>
-                                    <td>' . $trainer['first_name'] . ' ' .  $trainer['last_name'] . '</td>
-                                    <td>' . $trainer['id_trainer'] . '</td>
-                                    <td>' . $trainer['email'] . '</td>
-    
-                                    <td> 
-                                    <form method="post" action="" id="edit_form_' . $trainer['id_trainer'] . '" >
-                                    <input type="hidden" name="edit" value=" ' . $trainer['id_trainer'] . ' ">
-                                    <i class="fa-solid fa-pen-to-square ed_btn" onclick="submit_form_edit(' . $trainer['id_trainer'] . ')" ></i>
-                                    </form>
-                                    </td>
-    
-                                    <td> 
-                                    <form method="post" action="" id="remove_form_' . $trainer['id_trainer'] . '" >
-                                    <input type="hidden" name="remove" value=" ' . $trainer['id_trainer'] . ' ">
-                                    <i class="fa-solid fa-user-slash re_btn" onclick="submit_form_remove(' . $trainer['id_trainer'] . ')" ></i>
-                                    </form>
-                                    </td>
+                            $brief_by_title = get_brief_by_title($DB, $brief_title);
+                            if(!empty($brief_by_title)){
+                                echo ' <table class="table mt-2 ">
+                                <tr>
+                                    <th>Full name</th>
+                                    <th>ID</th>
+                                    <th>Email</th>
+                                    <th>Group</th>
+                                    <th>Title</th>
+                                    <th>State</th>
+                                    <th>Url</th>
                                 </tr>';
-                                }
-                            } else {
-                                echo '<tr>
-                                <td colspan="5"> No trainers found  </td>
-                                </tr>';
-                            }
-                        } else {
-                            $get_trainers = get_trainers($DB);
-                            if (!empty($get_trainers)) {
-                                foreach ($get_trainers as $trainer) {
+
+                                foreach($brief_by_title as $brief){
+
                                     echo '<tr>
-                                <td>' . $trainer['first_name'] . ' ' .  $trainer['last_name'] . '</td>
-                                <td>' . $trainer['id_trainer'] . '</td>
-                                <td>' . $trainer['email'] . '</td>
+                                    <td>' . $brief['first_name'] . ' ' .  $brief['last_name'] . '</td>
+                                    <td>' . $brief['id_trainer'] . '</td>
+                                    <td>' . $brief['email'] . '</td>
+                                    <td>' . $brief['group_'] . '</td>
+                                    <td>' . $brief['title'] . '</td>';
 
-                                <td> 
-                                <form method="post" action="" id="edit_form_' . $trainer['id_trainer'] . '" >
-                                <input type="hidden" name="edit" value=" ' . $trainer['id_trainer'] . ' ">
-                                <i class="fa-solid fa-pen-to-square ed_btn" onclick="submit_form_edit(' . $trainer['id_trainer'] . ')" ></i>
-                                </form>
-                                </td>
+                                    if($brief['state'] == 'done'){
+                                        echo '<td> <span> <i class="fa-solid fa-circle-check"></i> ' . $brief['state'] . ' </span> </td>
+                                               <td> <a href=" ' . $brief['url'] . ' " > Brief link </a> </td>';
+                                        
+                                    } else if($brief['state'] == 'doing'){
+                                        echo '<td> <span> <i class="fa-solid fa-hourglass"></i> ' . $brief['state'] . ' </span> </td>
+                                                <td> </td> ';
+                                    }
 
-                                <td> 
-                                <form method="post" action="" id="remove_form_' . $trainer['id_trainer'] . '" >
-                                <input type="hidden" name="remove" value=" ' . $trainer['id_trainer'] . ' ">
-                                <i class="fa-solid fa-user-slash re_btn" onclick="submit_form_remove(' . $trainer['id_trainer'] . ')" ></i>
-                                </form>
-                                </td>
-                            </tr>';
+                                    echo '</tr>';
                                 }
+                                echo ' </table>';
                             } else {
-                                echo '<tr>
-                            <td colspan="5"> No trainers yet  </td>
-                            </tr>';
+                                echo '<div class="mt-2 no_briefs d-flex justify-content-center align-items-center">
+                                <span style=" color: #7A7E86;"> No brief found </span>
+                                 </div>';
                             }
                         }
-
-                        // Get trainer information for editing
-                        if (isset($_POST['edit'])) {
-                            $trainer_id = $_POST['edit'];
-                            $trainer_info = get_trainer_by_id($DB, $trainer_id);
-                            show_edit_modal();
-                        }
-
-                        // Get trainer information to delete
-                        if (isset($_POST['remove'])) {
-                            $trainer_id = $_POST['remove'];
-                            $trainer_info = get_trainer_by_id($DB, $trainer_id);
-                            show_confirm_modal();
-                        }
-
                         ?>
-                    </table>
+               </div>
+                    </div>
+               
                 </div>
             </div>
         </div>
@@ -256,7 +209,7 @@ if (isset($_POST['confirm_remove'])) {
                     </div>
                     <div class="modal-body">
 
-                        <form action="trainers.php" method="post" class="row">
+                        <form action="" method="post" class="row">
                             <div class="col-6 mt-3">
                                 <label for="f_name_t">First name</label><br>
                                 <input type="text" id="f_name_t" class="add_input" name="f_name" value=" <?php echo $trainer_info['first_name'] ?> ">
@@ -283,6 +236,35 @@ if (isset($_POST['confirm_remove'])) {
                 </div>
             </div>
         </div>
+
+        <?php
+        if (isset($_POST['save_edit'])) {
+            $msg = 'edit';
+            $first_name = $_POST['f_name'];
+            $last_name = $_POST['l_name'];
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            $id_trainer = $_POST['id_trainer'];
+
+            if (strpos($email, 'trainer')) {
+                edit_trainer($DB, $last_name, $first_name, $email, $password, $id_trainer);
+                // header('location: trainers.php');
+                // exit();
+            } else {
+                $msg_titel = 'Error editing';
+                $msg_content = '<img src="imgs/error-img.png" alt="Error editing">
+                <span> The trainer`s email must contain the word: trainer </span>';
+
+                show_second_modal($msg);
+            }
+        }
+
+        if (isset($_POST['confirm_remove'])) {
+            $id_trainer = $_POST['id_trainer'];
+
+            remove_trainer($DB, $id_trainer);
+        }
+        ?>
 
         <!-- Show the modal after clicked at edit's button, to inform whether it was successful or not  -->
         <div class="modal fade" id="modal_msg_edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
