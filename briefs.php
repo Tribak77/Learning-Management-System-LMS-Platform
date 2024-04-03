@@ -159,7 +159,7 @@ if (isset($_SESSION['user_role'])) {
                                         <form action="" method="post" class="col-12 row">
                                         <h4 class="col-10">' . $brief['title'] . '</h4>
                                         <input type="hidden" name="id_brief" value=" ' . $brief['id_brief'] . ' ">
-                                        <button type="submit" name="edit_brief"  class="col-2 edit_brief"> <i class="fa-solid fa-pen-to-square mb-4 ms-2"></i> </button>
+                                        <button type="submit" name="edit_brief"  class="col-2 edit_brief"> <i class="fa-solid fa-pen-to-square edit mb-4 ms-2"></i> </button>
                                          </form>
                                                  <div class="col-4 ">
                                                     <h6>from: </h6>
@@ -227,7 +227,7 @@ if (isset($_SESSION['user_role'])) {
                                                  <form action="" method="post" class="col-12 row">
                                                       <h4 class="col-10">' . $brief['title'] . '</h4>
                                                       <input type="hidden" name="id_brief" value="' . $brief['id_brief'] . '">
-                                                      <button type="submit" name="edit_brief"  class="col-2 edit_brief"> <i class="fa-solid fa-pen-to-square mb-4 ms-2"></i> </button>
+                                                      <button type="submit" name="edit_brief"  class="col-2 edit_brief"> <i class="fa-solid fa-pen-to-square edit mb-4 ms-2"></i> </button>
                                                  </form>
                                                  <div class="col-4 ">
                                                     <h6>from: </h6>
