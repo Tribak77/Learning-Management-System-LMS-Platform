@@ -128,7 +128,7 @@ if (isset($_POST['confirm_remove'])) {
                     <form action="" class="col-10 col-md-11 " method="post">
                         <div class="input-group ms-2 ">
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
-                            <input type="search" name="search" class="search_input col-9 col-md-11" placeholder=" Search briefs by last name">
+                            <input type="search" name="search" class="search_input col-9 col-md-11" placeholder=" Search learners by last name">
                         </div>
                     </form>
                     <div class="d-flex col-1">

@@ -189,6 +189,7 @@ $count_users = count_users_briefs($DB);
                                                <form action="" class="col-12 mt-3" method="post">
                                                <input type="hidden" name="brief_state" value="' . $brief_['state'] . '">
                                               <input type="hidden" name="id_brief" value="' . $brief_['id_brief'] . '">
+                                              <input type="hidden" name="title_brief" value="' . $brief_['title'] . '">
                                               <button class="see_details_brief me-3" type="submit" name="brief_details" >see</button>';
 
                                 if ($brief_['state'] == 'done') {
@@ -209,12 +210,9 @@ $count_users = count_users_briefs($DB);
                         $msg = 'dts';
                         $id_brief = $_POST['id_brief'];
                         $brief_state = $_POST['brief_state'];
+                        $brief_titel = $_POST['title_brief'];
                         $brief_details = get_brief_details($DB, $id_brief);
 
-                        foreach ($brief_details as $brief_dts) {
-                            $brief_titel = $brief_dts['title'];
-                            $id_brief = $brief_dts['id_brief'];
-                        }
                         show_second_modal($msg);
                     }
                     ?>

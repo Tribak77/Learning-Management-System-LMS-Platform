@@ -13,6 +13,14 @@ if (isset($_SESSION['user_role'])) {
     exit();
 }
 
+// confirm the delete of brief from tables brief and brief_skill
+if (isset($_POST['confirm_remove'])) {
+    $id_brief = $_POST['id_brief'];
+
+    $delete_brief = delete_brief($DB, $id_brief);
+   
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -138,12 +146,13 @@ if (isset($_SESSION['user_role'])) {
                                                   <span>' . $brief['date_end'] . '</span>
                                                 </div>
                                                 <form action="" class="col-6 mt-3" method="post">
-                                                  <input type="hidden" name="id_brief" value=" ' . $brief['id_brief'] . ' ">
+                                                  <input type="hidden" name="title_brief" value="' . $brief['title'] . '">
+                                                  <input type="hidden" name="id_brief" value="' . $brief['id_brief'] . '">
                                                   <button class="see_details_brief" type="submit" name="brief_details" >see</button>
                                                 </form>';
                                         if ($user_role == 'Learner') {
                                             echo '<form action="" class="col-6 mt-3" method="post">
-                                                      <input type="hidden" name="id_brief" value=" ' . $brief['id_brief'] . ' ">
+                                                      <input type="hidden" name="id_brief" value="' . $brief['id_brief'] . '">
                                                       <button class="start_brief" type="submit" name="brief_start" >start</button>
                                                   </form>';
                                         }
@@ -158,8 +167,9 @@ if (isset($_SESSION['user_role'])) {
                                         echo '<div class="col-11 col-md-3 row cart_brief m-3 p-3 text-center">
                                         <form action="" method="post" class="col-12 row">
                                         <h4 class="col-10">' . $brief['title'] . '</h4>
-                                        <input type="hidden" name="id_brief" value=" ' . $brief['id_brief'] . ' ">
-                                        <button type="submit" name="edit_brief"  class="col-2 edit_brief"> <i class="fa-solid fa-pen-to-square edit mb-4 ms-2"></i> </button>
+                                        <input type="hidden" name="id_brief" value="' . $brief['id_brief'] . '">
+                                        <input type="hidden" name="title_brief" value="' . $brief['title'] . '">
+                                        <button type="submit" name="delete_brief"  class="col-2 edit_brief"> <i class="fa-solid fa-trash re_btn mb-4 ms-2"></i> </button>
                                          </form>
                                                  <div class="col-4 ">
                                                     <h6>from: </h6>
@@ -170,7 +180,7 @@ if (isset($_SESSION['user_role'])) {
                                                   <span>' . $brief['date_end'] . '</span>
                                                 </div>
                                                 <form action="" class="col-11 mt-3" method="post">
-                                                  <input type="hidden" name="id_brief" value=" ' . $brief['id_brief'] . ' ">
+                                                  <input type="hidden" name="id_brief" value="' . $brief['id_brief'] . '">
                                                   <button class="see_details_brief" type="submit" name="brief_details" >see</button>
                                                   <span class="ms-3 mt-3 coming"><i class="fa-solid fa-clock"></i> Coming</span>
                                                 </form>
@@ -208,6 +218,7 @@ if (isset($_SESSION['user_role'])) {
                                                 </div>
                                                 <form action="" class="col-6 mt-3" method="post">
                                                   <input type="hidden" name="id_brief" value="' . $brief['id_brief'] . '">
+                                                  <input type="hidden" name="title_brief" value="' . $brief['title'] . '">
                                                   <button class="see_details_brief" type="submit" name="brief_details" >see</button>
                                                 </form>';
                                         if ($user_role == 'Learner') {
@@ -222,12 +233,13 @@ if (isset($_SESSION['user_role'])) {
                                         echo '</div>';
                                     }
 
-                                    if (($date_start > $currentDate) && ($user_role == 'Trainer' || $user_role == 'Admin')) {
+                                    if (($date_start > $currentDate) && ($user_role == 'Trainer')) {
                                         echo '<div class="col-lg-3 col-md-4 col-sm-12 row cart_brief m-3 p-3 text-center">
                                                  <form action="" method="post" class="col-12 row">
                                                       <h4 class="col-10">' . $brief['title'] . '</h4>
                                                       <input type="hidden" name="id_brief" value="' . $brief['id_brief'] . '">
-                                                      <button type="submit" name="edit_brief"  class="col-2 edit_brief"> <i class="fa-solid fa-pen-to-square edit mb-4 ms-2"></i> </button>
+                                                      <input type="hidden" name="title_brief" value="' . $brief['title'] . '">
+                                                      <button type="submit" name="delete_brief"  class="col-2 edit_brief"> <i class="fa-solid fa-trash re_btn mb-4 ms-2"></i> </button>
                                                  </form>
                                                  <div class="col-4 ">
                                                     <h6>from: </h6>
@@ -239,6 +251,7 @@ if (isset($_SESSION['user_role'])) {
                                                 </div>
                                                 <form action="" class="col-12 mt-3" method="post">
                                                   <input type="hidden" name="id_brief" value="' . $brief['id_brief'] . '">
+                                                  <input type="hidden" name="title_brief" value="' . $brief['title'] . '">
                                                   <button class="see_details_brief" type="submit" name="brief_details" >see</button>
                                                   <span class="ms-3 mt-3 coming"><i class="fa-solid fa-clock"></i> Coming</span>
                                                 </form>
@@ -256,11 +269,9 @@ if (isset($_SESSION['user_role'])) {
                         if (isset($_POST['brief_details'])) {
                             $msg = 'dts';
                             $id_brief = $_POST['id_brief'];
+                            $brief_titel = $_POST['title_brief'];
                             $brief_details = get_brief_details($DB, $id_brief);
 
-                            foreach ($brief_details as $brief_dts) {
-                                $brief_titel = $brief_dts['title'];
-                            }
                             show_second_modal($msg);
                         }
 
@@ -285,6 +296,14 @@ if (isset($_SESSION['user_role'])) {
                             show_second_modal($msg);
                         }
 
+                        if (isset($_POST['delete_brief'])) {
+                            $id_brief = $_POST['id_brief'];
+                            $title_brief = $_POST['title_brief'];
+                            // delete_brief($DB, $id_brief);
+
+                            show_confirm_modal();
+                        }
+
                         // if (isset($_POST['edit_brief'])) {
                         //     $id_brief = $_POST['id_brief'];
                         //     $brief_details = get_brief_details($DB, $id_brief);
@@ -303,6 +322,24 @@ if (isset($_SESSION['user_role'])) {
                 </div>
             </div>
 
+        </div>
+
+            <!-- show the modal to confirm removing the trainer -->
+            <div class="modal fade" id="modal_remove" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">remove brief: <?php echo $title_brief ?></h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body d-flex justify-content-center flex-wrap">
+                        <form action="" method="post">
+                            <input type="hidden" name="id_brief" value="<?php echo $id_brief ?>">
+                            <button type="submit" name="confirm_remove" class="cnf_re_btn"> remove </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Show the modal after clicked at start's button, to inform whether it was successful or not -->

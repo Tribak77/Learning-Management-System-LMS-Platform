@@ -169,6 +169,24 @@ function add_brief($DB, $titel, $date_start, $date_end, $attachment, $id_trainer
     return $brief_id;
 }
 
+function delete_brief($DB, $id_brief)
+{
+
+    $delete_brief = "START TRANSACTION;
+    delete from brief_skill where brief_skill.id_brief = :id_brief ;
+    delete from brief where brief.id_brief = :id_brief ;
+    COMMIT;";
+
+    $stat_delete_brief = $DB->prepare($delete_brief);
+    $stat_delete_brief->bindParam(':id_brief', $id_brief);
+
+    if ($stat_delete_brief->execute()) {
+        return true; 
+    } else {
+        return false; 
+    }
+}
+
 function add_skills_brief($DB, $id_brief, $id_skill)
 {
     $add_skills_brief = "INSERT INTO brief_skill ( id_brief , id_skill)
