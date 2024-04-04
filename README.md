@@ -9,20 +9,28 @@ This is a web-based Learning Management System (LMS) designed to facilitate the 
 * PHP
 * MySQL (or any SQL database)
 # Features
-## Admin Panel:
 
+## Admin Panel:
 * Add, edit, and delete learners and trainers.
 * Monitor briefs' status and progress.
-* 
+  ![admin dashboard](imgs/admin_dash.png)
+  ![log in](imgs/log_in.png)
+  ![trainers](imgs/trainers.png)
+  ![learners](imgs/learners.png)
+  
 ## Trainer Dashboard:
 * Create, edit, and delete briefs.
 * Set start and end dates for briefs.
 * Review learners' progress on briefs.
+![trainer dashboard](imgs/trainer_dash.png)
+![brief statement ](imgs/brief_statement.png)
+![brief details ](imgs/brief_details.png)
 
 ## Learner Dashboard:
 * View available briefs.
 * Mark briefs as in progress or completed.
 * Submit URLs for completed briefs.
+  ![briefs ](imgs/briefs.png)
   
 # Installation
 Clone this repository to your local machine.
